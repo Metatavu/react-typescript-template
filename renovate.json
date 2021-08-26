@@ -4,6 +4,7 @@
   ],
   "reviewers": ["jarinykanen"],
   "labels": ["dependencies"],
+  "requiredStatusChecks": null,
   "packageRules": [
     {
       "matchPackagePatterns": ["eslint"],
