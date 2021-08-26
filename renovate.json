@@ -17,6 +17,5 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "devDependencies"],
       "automerge": true
     }
-  ],
-  "prCreation": "not-pending"
+  ]
 }
