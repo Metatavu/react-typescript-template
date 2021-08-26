@@ -12,6 +12,15 @@
     {
       "matchDepTypes": ["optionalDependencies"],
       "addLabels": ["optional"]
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "devDependencies"],
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["npm"],
+      "stabilityDays": 3
     }
-  ]
+  ],
+  "prCreation": "not-pending"
 }
