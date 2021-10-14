@@ -1,6 +1,10 @@
 import { ReportHandler } from "web-vitals";
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Report web vitals
+ *
+ * @param onPerfEntry report handler function
+ */
 const reportWebVitals = (onPerfEntry?: ReportHandler) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
     import("web-vitals").then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {

@@ -1,26 +1,18 @@
-import { Box } from "@material-ui/core";
 import React from "react";
-import useAppLayoutStyles from "styles/layouts/app-layout";
-/**
- * Component properties
- */
-interface Props {
-}
+import { Content, Root } from "styled/layouts/app-layout";
 
 /**
  * App layout component
  *
  * @param props component properties
  */
-const AppLayout: React.FC<Props> = ({ children }) => {
-  const classes = useAppLayoutStyles();
-
+const AppLayout: React.FC = ({ children }) => {
   return (
-    <Box className={ classes.root }>
-      <Box className={ classes.content }>
+    <Root>
+      <Content>
         { children }
-      </Box>
-    </Box>
+      </Content>
+    </Root>
   );
 };
 

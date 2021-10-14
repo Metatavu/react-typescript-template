@@ -24,7 +24,7 @@ export class SystemApi extends runtime.BaseAPI {
      * Replies ping with pong
      * Replies with pong
      */
-    async pingRaw(initOverrides?: RequestInit): Promise<runtime.ApiResponse<string>> {
+    async pingRaw(): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -42,7 +42,7 @@ export class SystemApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        });
 
         return new runtime.TextApiResponse(response) as any;
     }
@@ -51,8 +51,8 @@ export class SystemApi extends runtime.BaseAPI {
      * Replies ping with pong
      * Replies with pong
      */
-    async ping(initOverrides?: RequestInit): Promise<string> {
-        const response = await this.pingRaw(initOverrides);
+    async ping(): Promise<string> {
+        const response = await this.pingRaw();
         return await response.value();
     }
 

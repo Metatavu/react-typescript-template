@@ -1,59 +1,50 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Typography } from "@material-ui/core";
 import * as React from "react";
-import { useCallback, useState } from "react";
-import strings from "../../localization/strings";
-import { ErrorContextType } from "../../types";
-import GenericDialog from "../generics/generic-dialog";
+import { Typography } from "@mui/material";
+import strings from "localization/strings";
+import type { ErrorContextType } from "types";
+import GenericDialog from "components/generic/generic-dialog";
 
 /**
  * Error context initialization
  */
 export const ErrorContext = React.createContext<ErrorContextType>({
-  setError: (message: string) => {}
+  setError: () => {}
 });
 
 /**
- * Provider for error context
- * 
- * @param children children of the component
- * @returns ErrorProvider component
+ * Error context provider component
+ *
+ * @param props component properties
  */
 const ErrorHandler: React.FC = ({ children }) => {
-  const [ error, setError ] = useState<string>();
+  const [ error, setError ] = React.useState<string>();
 
   /**
    * Handles error message and tries to print any given error to logs
    *
    * @param message error message
-   * @param error any error
+   * @param err any error
    */
-  const handleError = async (message: string, error?: any): Promise<void> => {
-    if (error) {
-      if (error instanceof Response) {
-        try {
-          // eslint-disable-next-line no-console
-          console.error(await error.json());
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
+  const handleError = async (message: string, err?: any) => {
+    if (err instanceof Response) {
+      try {
+        // eslint-disable-next-line no-console
+        console.error(await err.json());
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(err);
       }
     }
 
     setError(message);
   };
 
-  const contextValue = {
-    setError: useCallback((message, error) => handleError(message, error), [])
-  };
-
   /**
-   * Renders error dialog
+   * Component render
    */
-  const renderErrorDialog = () => {
-    return (
+  return (
+    <ErrorContext.Provider value={{ setError: React.useCallback(handleError, []) }}>
+      { children }
       <GenericDialog
         open={ error !== undefined }
         error={ false }
@@ -67,16 +58,6 @@ const ErrorHandler: React.FC = ({ children }) => {
           <Typography>{ error }</Typography>
         }
       </GenericDialog>
-    );
-  };
-
-  /**
-   * Component render
-   */
-  return (
-    <ErrorContext.Provider value={ contextValue }>
-      { renderErrorDialog() }
-      { children }
     </ErrorContext.Provider>
   );
 };

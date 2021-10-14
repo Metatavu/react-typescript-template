@@ -1,20 +1,5 @@
 /**
- * Access token
- */
-export interface AccessToken {
-  created: Date;
-  access_token: string;
-  expires_in?: number;
-  refresh_token?: string;
-  refresh_expires_in?: number;
-  firstName?: string;
-  lastName?: string;
-  userId?: string;
-  roles?: string[];
-}
-
-/**
- * Configuration
+ * Application configuration
  */
 export interface Configuration {
   auth: {
@@ -28,9 +13,9 @@ export interface Configuration {
 }
 
 /**
- * Interface for error context type
+ * Error context type
  */
-export interface ErrorContextType {
+export type ErrorContextType = {
   error?: string;
   setError: (message: string, error?: any) => void;
-}
+};

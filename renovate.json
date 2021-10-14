@@ -2,21 +2,40 @@
   "extends": [
     "config:base"
   ],
-  "reviewers": ["jarinykanen"],
-  "labels": ["dependencies"],
-  "requiredStatusChecks": null,
+  "labels": [
+    "dependencies"
+  ],
   "packageRules": [
     {
-      "matchPackagePatterns": ["eslint"],
-      "labels": ["linting"]
+      "labels": [
+        "linting"
+      ],
+      "matchPackagePatterns": [
+        "eslint"
+      ]
     },
     {
-      "matchDepTypes": ["optionalDependencies"],
-      "addLabels": ["optional"]
+      "addLabels": [
+        "optional"
+      ],
+      "matchDepTypes": [
+        "optionalDependencies"
+      ]
     },
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "devDependencies"],
-      "automerge": true
+      "automerge": true,
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "devDependencies"
+      ]
     }
+  ],
+  "requiredStatusChecks": null,
+  "reviewers": [
+    "jarinykanen",
+    "lauriLukkarinen"
   ]
 }
