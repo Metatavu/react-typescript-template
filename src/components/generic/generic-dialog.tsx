@@ -1,10 +1,9 @@
 import * as React from "react";
-
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 /**
- * Interface representing component properties
+ * Component properties
  */
 interface Props {
   title: string;
@@ -23,7 +22,9 @@ interface Props {
 }
 
 /**
- * React component displaying confirm dialogs
+ * Generic dialog component
+ *
+ * @param props component properties
  */
 const GenericDialog: React.FC<Props> = ({
   open,
@@ -44,32 +45,27 @@ const GenericDialog: React.FC<Props> = ({
   /**
    * Event handler for on close click
    *
+   * @param event event source of the callback
    * @param reason reason why dialog was closed
    */
-  const onCloseClick = (reason: string) => {
-    if (ignoreOutsideClicks && (reason === "backdropClick" || reason === "escapeKeyDown")) {
-      return;
+  const onCloseClick = (event: {}, reason: string) => {
+    if (!ignoreOutsideClicks || (reason !== "backdropClick" && reason !== "escapeKeyDown")) {
+      onClose();
     }
-
-    onClose();
   };
+
   /**
    * Component render
    */
   return (
     <Dialog
-      disableEnforceFocus={ disableEnforceFocus }
       open={ open }
-      onClose={ (event, reason) => onCloseClick(reason) }
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      onClose={ onCloseClick }
       fullScreen={ fullScreen }
       fullWidth={ fullWidth }
+      disableEnforceFocus={ disableEnforceFocus }
     >
-      <DialogTitle
-        disableTypography
-        id="alert-dialog-title"
-      >
+      <DialogTitle>
         { title }
         <IconButton
           size="small"
@@ -91,14 +87,14 @@ const GenericDialog: React.FC<Props> = ({
           </Button>
         }
         { positiveButtonText &&
-        <Button
-          disabled={ error || disabled }
-          onClick={ onConfirm }
-          color="primary"
-          autoFocus
-        >
-          { positiveButtonText }
-        </Button>
+          <Button
+            disabled={ error || disabled }
+            onClick={ onConfirm }
+            color="primary"
+            autoFocus
+          >
+            { positiveButtonText }
+          </Button>
         }
       </DialogActions>
     </Dialog>

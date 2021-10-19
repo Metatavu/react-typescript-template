@@ -1,7 +1,5 @@
 import Config from "app/config";
-import { AuthState } from "features/auth/auth-slice";
 import Keycloak, { KeycloakInstance } from "keycloak-js";
-import { AccessToken } from "types";
 
 /**
  * Utility class for authentication
@@ -9,9 +7,9 @@ import { AccessToken } from "types";
 export default class AuthUtils {
 
   /**
-   * Initializes keycloak instance
+   * Initializes Keycloak instance
    *
-   * @param keycloak keycloak instance
+   * @param keycloak Keycloak instance
    */
   public static keycloakInit = (keycloak: KeycloakInstance) => {
     return new Promise<boolean>((resolve, reject) =>
@@ -26,32 +24,25 @@ export default class AuthUtils {
    * @param keycloak keycloak instance
    */
   public static loadUserProfile = (keycloak: KeycloakInstance) => {
-    return new Promise((resolve, reject) =>
-      keycloak.loadUserProfile()
-        .then(resolve)
-        .catch(reject));
+    return new Promise((resolve, reject) => keycloak.loadUserProfile()
+      .then(resolve)
+      .catch(reject));
   };
 
   /**
-   * Initializes authentication flow
+   * Initializes Keycloak authentication flow
    *
-   * @returns promise of initialized auth state
+   * @returns promise of initialized Keycloak instance
    */
-  public static initAuth = async (): Promise<AuthState> => {
+  public static initAuth = async (): Promise<KeycloakInstance> => {
     try {
       const keycloak = Keycloak(Config.get().auth);
 
       await AuthUtils.keycloakInit(keycloak);
 
-      const { token, tokenParsed } = keycloak;
+      keycloak.token && await AuthUtils.loadUserProfile(keycloak);
 
-      if (!tokenParsed?.sub || !token) {
-        return { keycloak: keycloak };
-      }
-
-      await AuthUtils.loadUserProfile(keycloak);
-      const accessToken = AuthUtils.buildToken(keycloak);
-      return { keycloak: keycloak, accessToken: accessToken };
+      return keycloak;
     } catch (error) {
       return Promise.reject(error);
     }
@@ -60,64 +51,32 @@ export default class AuthUtils {
   /**
    * Refreshes access token
    *
-   * @param keycloak keycloak instance
-   * @returns refreshed access token or undefined
+   * @param keycloak Keycloak instance
+   * @returns refreshed access token or undefined if token did not need refreshing
    */
-  public static refreshAccessToken = async (keycloak?: KeycloakInstance): Promise<AccessToken | undefined> => {
+  public static refreshAccessToken = async (keycloak?: KeycloakInstance): Promise<KeycloakInstance | undefined> => {
     try {
       if (!keycloak?.authenticated) {
         return;
       }
 
       const refreshed = await keycloak.updateToken(70);
+
       if (!refreshed) {
         return;
       }
 
       const { token, tokenParsed } = keycloak;
+
       if (!tokenParsed || !tokenParsed.sub || !token) {
         return;
       }
 
-      const accessToken = AuthUtils.buildToken(keycloak);
-      return accessToken;
+      return keycloak;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-  };
-
-  /**
-   * Builds access token using Keycloak instance
-   *
-   * @param keycloak Keycloak instance
-   * @returns access token or undefined if building fails
-   */
-  public static buildToken = (keycloak: KeycloakInstance): AccessToken | undefined => {
-    const {
-      token,
-      tokenParsed,
-      refreshToken,
-      refreshTokenParsed,
-      profile,
-      realmAccess
-    } = keycloak;
-
-    if (!tokenParsed || !tokenParsed.sub || !token) {
-      return undefined;
-    }
-
-    return {
-      created: new Date(),
-      access_token: token,
-      expires_in: tokenParsed.exp,
-      refresh_token: refreshToken,
-      refresh_expires_in: refreshTokenParsed?.exp,
-      firstName: profile?.firstName,
-      lastName: profile?.lastName,
-      userId: tokenParsed.sub,
-      roles: realmAccess?.roles
-    };
   };
 
 }

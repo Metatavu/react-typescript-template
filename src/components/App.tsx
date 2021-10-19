@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import AccessTokenRefresh from "../containers/access-token-refresh";
-import MainScreen from "../screens/main-screen";
+import AccessTokenRefresh from "components/containers/access-token-refresh";
+import MainScreen from "components/screens/main-screen";
 
 /**
- * App component
+ * Application component
  */
 const App: React.FC = () => {
   return (

@@ -3,9 +3,9 @@ import en from "./en.json";
 import fi from "./fi.json";
 
 /**
- * Interface describing localized strings
+ * Localized strings
  */
-export interface IStrings extends LocalizedStringsMethods {
+export interface Localized extends LocalizedStringsMethods {
 
   /**
    * Translations related to generic words
@@ -23,6 +23,9 @@ export interface IStrings extends LocalizedStringsMethods {
 
 }
 
-const strings: IStrings = new LocalizedStrings({ en: en, fi: fi });
+/**
+ * Initialized localized strings
+ */
+const strings: Localized = new LocalizedStrings({ en: en, fi: fi });
 
 export default strings;
