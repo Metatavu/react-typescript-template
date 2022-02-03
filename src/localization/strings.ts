@@ -11,7 +11,12 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to generic words
    */
   generic: {
+    cancel: string;
+    delete: string;
+    edit: string;
+    logout: string;
     notImplemented: string;
+    save: string;
   };
 
   /**

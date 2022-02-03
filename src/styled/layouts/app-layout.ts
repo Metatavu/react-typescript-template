@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
  * Styled root component
  */
 export const Root = styled(Box, {
-  label: "app-layout-root"
+  label: "app-layout--root"
 })(({ theme }) => ({
   height: "100vh",
   width: "100vw",
@@ -17,7 +17,7 @@ export const Root = styled(Box, {
  * Styled content component
  */
 export const Content = styled(Box, {
-  label: "app-layout-content"
+  label: "app-layout--content"
 })(({ theme }) => ({
   backgroundColor: "rgba(218,219,205,0.1)",
   display: "flex",

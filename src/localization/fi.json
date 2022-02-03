@@ -1,7 +1,12 @@
 {
 
   "generic": {
-    "notImplemented": "Ei vielä toteutettu"
+    "cancel": "Peruuta",
+    "delete": "Poista",
+    "edit": "Muokkaa",
+    "logout": "Kirjaudu ulos",
+    "notImplemented": "Ei vielä toteutettu",
+    "save": "Tallenna"
   },
 
   "errorHandling": {
