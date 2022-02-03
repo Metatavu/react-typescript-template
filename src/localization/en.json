@@ -1,7 +1,12 @@
 {
 
   "generic": {
-    "notImplemented": "Not yet implemented"
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "logout": "Logout",
+    "notImplemented": "Not yet implemented",
+    "save": "Save"
   },
 
   "errorHandling": {

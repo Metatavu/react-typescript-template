@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from "react";
 import { Typography } from "@mui/material";
 import strings from "localization/strings";
@@ -12,7 +13,7 @@ export const ErrorContext = React.createContext<ErrorContextType>({
 });
 
 /**
- * Error context provider component
+ * Error handler component
  *
  * @param props component properties
  */
@@ -26,24 +27,32 @@ const ErrorHandler: React.FC = ({ children }) => {
    * @param err any error
    */
   const handleError = async (message: string, err?: any) => {
+    setError(message);
+
     if (err instanceof Response) {
       try {
-        // eslint-disable-next-line no-console
         console.error(await err.json());
-      } catch (e) {
-        // eslint-disable-next-line no-console
+      } catch {
         console.error(err);
       }
+      return;
     }
 
-    setError(message);
+    console.error(err);
   };
+
+  /**
+   * Memoized context value
+   */
+  const contextValue = React.useMemo(() => ({
+    setError: handleError
+  }), [ error ]);
 
   /**
    * Component render
    */
   return (
-    <ErrorContext.Provider value={{ setError: React.useCallback(handleError, []) }}>
+    <ErrorContext.Provider value={ contextValue }>
       { children }
       <GenericDialog
         open={ error !== undefined }

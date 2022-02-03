@@ -1,47 +1,69 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow
-import * as React from "react";
-import { KeycloakInstance } from "keycloak-js";
+/* eslint-disable react/jsx-no-useless-fragment */
+import React from "react";
+import Keycloak from "keycloak-js";
 import { login, selectKeycloak } from "features/auth-slice";
 import { useAppDispatch, useAppSelector, useInterval } from "app/hooks";
-import AuthUtils from "utils/auth";
+import Config from "app/config";
 
 /**
- * Component for keeping authentication token fresh
- *
- * @param props component properties
+ * Component for handling authentication with Keycloak
  */
-const AccessTokenRefresh: React.FC = ({ children }) => {
+const AuthenticationProvider: React.FC = ({ children }) => {
   const keycloak = useAppSelector(selectKeycloak);
+  const dispatch = useAppDispatch();
 
   /**
-   * Dispatches Keycloak instance to Redux
-   *
-   * @param keycloak Keycloak instance
+   * Initializes Keycloak authentication
    */
-  const updateKeycloak = (updatedKeycloak?: KeycloakInstance) => {
-    updatedKeycloak && useAppDispatch()(login(updatedKeycloak));
+  const initializeAuthentication = async () => {
+    try {
+      const keycloakInstance = Keycloak(Config.get().auth);
+
+      await keycloakInstance.init({
+        onLoad: "login-required",
+        checkLoginIframe: false
+      });
+
+      await keycloakInstance.loadUserProfile();
+
+      dispatch(login(keycloakInstance));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
+  /**
+   * Refreshes authentication
+   */
+  const refreshAuthentication = async () => {
+    try {
+      if (!keycloak?.authenticated) {
+        throw new Error("Not authenticated");
+      }
+
+      await keycloak.updateToken(70);
+
+      dispatch(login(keycloak));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   };
 
   /**
    * Initializes authentication
    */
-  React.useEffect(() => {
-    AuthUtils.initAuth()
-      .then(updateKeycloak)
-      // eslint-disable-next-line no-console
-      .catch(e => console.error(e));
-    // eslint-disable-next-line
-  }, []);
+  React.useEffect(() => { initializeAuthentication(); }, []);
 
   /**
    * Begins token refresh interval
    */
-  useInterval(() => AuthUtils.refreshAccessToken(keycloak).then(updateKeycloak), 1000 * 60);
+  useInterval(refreshAuthentication, 1000 * 60);
 
-  /**
-   * Component render
-   */
-  return keycloak?.token ? <>{ children }</> : null;
+  if (!keycloak?.token) return null;
+
+  return <>{ children }</>;
 };
 
-export default AccessTokenRefresh;
+export default AuthenticationProvider;
